@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLE_test.Android", "BLE_test.Android\BLE_test.Android.csproj", "{EAF67947-DED0-4359-B6F7-13D893E1CC0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLE_test", "BLE_test\BLE_test.csproj", "{F3BC0864-62DB-435C-B57D-0FAB71B67C76}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EAF67947-DED0-4359-B6F7-13D893E1CC0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAF67947-DED0-4359-B6F7-13D893E1CC0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAF67947-DED0-4359-B6F7-13D893E1CC0D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{EAF67947-DED0-4359-B6F7-13D893E1CC0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAF67947-DED0-4359-B6F7-13D893E1CC0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAF67947-DED0-4359-B6F7-13D893E1CC0D}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F3BC0864-62DB-435C-B57D-0FAB71B67C76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3BC0864-62DB-435C-B57D-0FAB71B67C76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3BC0864-62DB-435C-B57D-0FAB71B67C76}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{F3BC0864-62DB-435C-B57D-0FAB71B67C76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3BC0864-62DB-435C-B57D-0FAB71B67C76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3BC0864-62DB-435C-B57D-0FAB71B67C76}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8038C028-66CF-4286-92B3-4CC124E41B41}
+	EndGlobalSection
+EndGlobal
