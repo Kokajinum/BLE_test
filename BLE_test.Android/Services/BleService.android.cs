@@ -158,3 +158,121 @@ namespace BLE_test.Droid.Services
         }
     }
 }
+
+
+//using System;
+//using System.Linq;
+//using BLE_test.Interfaces;
+//using CoreBluetooth;
+//using Foundation;
+//using Xamarin.Forms;
+
+//[assembly: Dependency(typeof(BLE_test.iOS.Services.BleService))]
+//namespace BLE_test.iOS.Services
+//{
+//    public class BleService : IBleService
+//    {
+//        private CBCentralManager _centralManager;
+//        private CBPeripheral _connectedPeripheral;
+//        private IBleDevice _bleDevice;
+
+//        public event EventHandler<BleDataEventArgs> DataReceived;
+//        public event EventHandler<string> ScanTimeoutReached;
+//        public event EventHandler<string> ConnectionLost;
+//        public event EventHandler<string> ConnectionError;
+
+//        public BleService()
+//        {
+//            _centralManager = new CBCentralManager();
+//            _centralManager.DiscoveredPeripheral += OnDiscoveredPeripheral;
+//            _centralManager.UpdatedState += OnCentralManagerUpdatedState;
+//            _centralManager.ConnectedPeripheral += OnConnectedPeripheral;
+//            _centralManager.DisconnectedPeripheral += OnDisconnectedPeripheral;
+//        }
+
+//        public void ConnectToDevice(IBleDevice device)
+//        {
+//            _bleDevice = device;
+//            var options = new PeripheralScanningOptions { AllowDuplicatesKey = false };
+//            _centralManager.ScanForPeripherals(peripheralUuids: null, options: options);
+
+//            // Implement timeout for scanning
+//            var scanTimeout = new DispatchTime(DispatchTime.Now, new DispatchTimeInterval(TimeSpan.FromSeconds(10)));
+//            DispatchQueue.MainQueue.DispatchAfter(scanTimeout, () =>
+//            {
+//                _centralManager.StopScan();
+//                ScanTimeoutReached?.Invoke(this, "Scan timeout reached, no device found.");
+//            });
+//        }
+
+//        private void OnDiscoveredPeripheral(object sender, CBDiscoveredPeripheralEventArgs e)
+//        {
+//            if (e.Peripheral.Name != null && e.Peripheral.Name.Contains("BM77"))
+//            {
+//                _centralManager.StopScan();
+//                _centralManager.ConnectPeripheral(e.Peripheral);
+//            }
+//        }
+
+//        private void OnConnectedPeripheral(object sender, CBPeripheralEventArgs e)
+//        {
+//            _connectedPeripheral = e.Peripheral;
+//            _connectedPeripheral.DiscoveredService += OnDiscoveredService;
+//            _connectedPeripheral.DiscoverServices(new[] { CBUUID.FromString(_bleDevice.ServiceUuid.ToString()) });
+//        }
+
+//        private void OnDisconnectedPeripheral(object sender, CBPeripheralErrorEventArgs e)
+//        {
+//            ConnectionLost?.Invoke(this, "Connection lost.");
+//        }
+
+//        private void OnDiscoveredService(object sender, NSErrorEventArgs e)
+//        {
+//            var service = _connectedPeripheral.Services.FirstOrDefault(s => s.UUID == CBUUID.FromString(_bleDevice.ServiceUuid.ToString()));
+//            if (service != null)
+//            {
+//                _connectedPeripheral.DiscoveredCharacteristic += OnDiscoveredCharacteristic;
+//                _connectedPeripheral.DiscoverCharacteristics(new[] { CBUUID.FromString(_bleDevice.CharacteristicUuid.ToString()) }, service);
+//            }
+//        }
+
+//        private void OnDiscoveredCharacteristic(object sender, CBServiceEventArgs e)
+//        {
+//            var characteristic = e.Service.Characteristics.FirstOrDefault(c => c.UUID == CBUUID.FromString(_bleDevice.CharacteristicUuid.ToString()));
+//            if (characteristic != null)
+//            {
+//                _connectedPeripheral.UpdatedCharacterteristicValue += OnUpdatedCharacteristicValue;
+//                _connectedPeripheral.SetNotifyValue(true, characteristic);
+
+//                if (_bleDevice.DescriptorUuid.HasValue)
+//                {
+//                    var descriptor = characteristic.Descriptors.FirstOrDefault(d => d.UUID == CBUUID.FromString(_bleDevice.DescriptorUuid.ToString()));
+//                    if (descriptor != null)
+//                    {
+//                        var value = _bleDevice.EnableIndicationValue ? new byte[] { 0x02, 0x00 } : new byte[] { 0x01, 0x00 };
+//                        var data = NSData.FromArray(value);
+//                        _connectedPeripheral.WriteValue(data, descriptor);
+//                    }
+//                }
+//            }
+//        }
+
+//        private void OnUpdatedCharacteristicValue(object sender, CBCharacteristicEventArgs e)
+//        {
+//            if (e.Characteristic.UUID == CBUUID.FromString(_bleDevice.CharacteristicUuid.ToString()))
+//            {
+//                var data = e.Characteristic.Value.ToArray();
+//                _bleDevice.HandleData(data);
+//                DataReceived?.Invoke(this, new BleDataEventArgs(data));
+//            }
+//        }
+
+//        private void OnCentralManagerUpdatedState(object sender, EventArgs e)
+//        {
+//            if (_centralManager.State != CBCentralManagerState.PoweredOn)
+//            {
+//                ConnectionError?.Invoke(this, "Bluetooth is not enabled.");
+//            }
+//        }
+//    }
+//}
