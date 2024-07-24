@@ -8,9 +8,9 @@ namespace BLE_test.Devices
     public class BloodPressureDevice : IBleDevice
     {
         public string DeviceName => "BM77";
-        public Guid ServiceUuid => new Guid("00001810-0000-1000-8000-00805f9b34fb");
-        public Guid CharacteristicUuid => new Guid("00002a35-0000-1000-8000-00805f9b34fb");
-        public Guid? DescriptorUuid => new Guid("00002902-0000-1000-8000-00805f9b34fb");
+        public Guid ServiceUuid => new("00001810-0000-1000-8000-00805f9b34fb");
+        public Guid CharacteristicUuid => new("00002a35-0000-1000-8000-00805f9b34fb");
+        public Guid? DescriptorUuid => new("00002902-0000-1000-8000-00805f9b34fb");
 
         public bool EnableNotificationValue => false;
 

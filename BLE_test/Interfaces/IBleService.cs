@@ -8,6 +8,9 @@ namespace BLE_test.Interfaces
     {
         void ConnectToDevice(IBleDevice device);
         event EventHandler<BleDataEventArgs> DataReceived;
+        public event EventHandler<string> ScanTimeoutReached;
+        public event EventHandler<string> ConnectionLost;
+        public event EventHandler<string> ConnectionError;
     }
 
     public class BleDataEventArgs : EventArgs

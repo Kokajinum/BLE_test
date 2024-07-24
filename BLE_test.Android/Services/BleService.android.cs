@@ -27,18 +27,25 @@ namespace BLE_test.Droid.Services
         private ScanCallback _scanCallback;
         private BluetoothGatt _bluetoothGatt;
         private IBleDevice _bleDevice;
+        private Handler _scanHandler;
+        private const long ScanTimeout = 10000;
 
         public event EventHandler<BleDataEventArgs> DataReceived;
+        public event EventHandler<string> ScanTimeoutReached;
+        public event EventHandler<string> ConnectionLost;
+        public event EventHandler<string> ConnectionError;
 
         public BleService()
         {
             _bluetoothManager = (BluetoothManager)Android.App.Application.Context.GetSystemService(Context.BluetoothService);
             _bluetoothAdapter = _bluetoothManager.Adapter;
             _scanner = _bluetoothAdapter.BluetoothLeScanner;
+            _scanHandler = new Handler(Looper.MainLooper);
         }
 
         public void ConnectToDevice(IBleDevice device)
         {
+            _bleDevice = device;
             var scanFilter = new ScanFilter.Builder()
                 .SetDeviceName(device.DeviceName)
                 .Build();
@@ -49,6 +56,13 @@ namespace BLE_test.Droid.Services
 
             _scanCallback = new BleScanCallback(this);
             _scanner.StartScan(new[] { scanFilter }, scanSettings, _scanCallback);
+
+            // Set a timeout for scanning
+            _scanHandler.PostDelayed(() =>
+            {
+                _scanner.StopScan(_scanCallback);
+                ScanTimeoutReached?.Invoke(this, "Scan timeout reached, no device found.");
+            }, ScanTimeout);
         }
 
         private class BleScanCallback : ScanCallback
@@ -66,6 +80,7 @@ namespace BLE_test.Droid.Services
                 if (result.Device.Name != null && result.Device.Name.Contains("BM77"))
                 {
                     _bleService._scanner.StopScan(this);
+                    _bleService._scanHandler.RemoveCallbacksAndMessages(null); // Stop timeout handler
                     _bleService._bluetoothGatt = result.Device.ConnectGatt(Android.App.Application.Context, false, new GattCallback(_bleService));
                 }
             }
@@ -73,7 +88,7 @@ namespace BLE_test.Droid.Services
             public override void OnScanFailed(ScanFailure errorCode)
             {
                 base.OnScanFailed(errorCode);
-                // Handle scan failure
+                _bleService.ConnectionError?.Invoke(_bleService, $"Scan failed: {errorCode}");
             }
         }
 
@@ -91,6 +106,16 @@ namespace BLE_test.Droid.Services
                 if (newState == ProfileState.Connected)
                 {
                     gatt.DiscoverServices();
+                }
+                else if (newState == ProfileState.Disconnected)
+                {
+                    _bleService.ConnectionLost?.Invoke(_bleService, "Connection lost.");
+                }
+
+                // Handle possible connection errors
+                if (status != GattStatus.Failure)
+                {
+                    _bleService.ConnectionError?.Invoke(_bleService, $"Connection error: {status}");
                 }
             }
 
